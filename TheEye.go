@@ -137,21 +137,25 @@ func CheckHosts(Duration time.Duration) {
 
   	BoldGreen.Println("[*] Host file surveillance started")
 
-	for ;; {
-		DefaultHostsFile, _ := exec.Command("sh", "-c", "cat /etc/hosts").Output()
-		time.Sleep(Duration*time.Second)
-		HostsFile,_ := exec.Command("sh", "-c", "cat /etc/hosts").Output()
+  	if Duration == 0 {
+  		// Add suspicous address recognition
+  	}else {
+		for ;; {
+			DefaultHostsFile, _ := exec.Command("sh", "-c", "cat /etc/hosts").Output()
+			time.Sleep(Duration*time.Second)
+			HostsFile,_ := exec.Command("sh", "-c", "cat /etc/hosts").Output()
 
-		if string(HostsFile) != string(DefaultHostsFile) {
-			BoldRed.Println("[!] Host file has been corrupted !")
-			exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'Host file has been corrupted !'").Run()
-			exec.Command("sh", "-c", "espeak 'Warning, host file has been corrupted'").Run()
-		}else{
-			if Verbose == true {
-				BoldGreen.Println("[+] Host file Clean")
+			if string(HostsFile) != string(DefaultHostsFile) {
+				BoldRed.Println("[!] Host file has been corrupted !")
+				exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'Host file has been corrupted !'").Run()
+				exec.Command("sh", "-c", "espeak 'Warning, host file has been corrupted'").Run()
+			}else{
+				if Verbose == true {
+					BoldGreen.Println("[+] Host file Clean")
+				}
 			}
 		}
-	}
+  	}
 
 }
 
@@ -163,7 +167,8 @@ func CheckConnections(Duration time.Duration) {
   	BoldGreen := Green.Add(color.Bold)
 
   	BoldGreen.Println("[*] Suspicous connection surveillance started")
-	for ;; {
+
+  	if Duration == 0 {
 		AllConnections, _ := exec.Command("sh", "-c", "netstat -t | grep ESTABLISHED").Output()
 		Connections := strings.Split(string(AllConnections), "\n")
 		for i := 0; i < len(Connections); i++ {
@@ -182,6 +187,27 @@ func CheckConnections(Duration time.Duration) {
 				}
 			}
 		}
-		time.Sleep(Duration*time.Second)
-	}
+  	}else {
+  		for ;; {
+			AllConnections, _ := exec.Command("sh", "-c", "netstat -t | grep ESTABLISHED").Output()
+			Connections := strings.Split(string(AllConnections), "\n")
+			for i := 0; i < len(Connections); i++ {
+				if !strings.Contains(Connections[i], ":http") && !strings.Contains(Connections[i], ":https") && !strings.Contains(Connections[i], ":netbios-ssn") {
+					if strings.Contains(Connections[i], ":") {
+						Foreign := strings.Split(Connections[i], ":")
+						if !strings.Contains(Foreign[1], "localhost") {
+							DotCount := strings.Split(Foreign[1], ".")
+							if len(DotCount) == 4 {
+								BoldRed.Print("[!] Suspicous connection detected ! ----> ")
+								BoldRed.Println(Foreign[1])
+								exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'Suspicous connection detected !'").Run()
+								exec.Command("sh", "-c", "espeak 'Warning, suspicous connection detected'").Run()
+							}
+						}
+					}
+				}
+			}
+			time.Sleep(Duration*time.Second)
+		}
+  	}
 }
