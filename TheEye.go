@@ -5,8 +5,7 @@ import "github.com/fatih/color"
 import "strings"
 import "os/exec"
 import "time"
-//import "fmt"
-//import "os"
+import "os"
 
 
 type ARPCahce struct {
@@ -26,7 +25,22 @@ var ARP ARPCahce
 
 func main() {
 
+	ARGS := os.Args[1:]
 
+	if len(ARGS) != 0 {
+		if ARGS[0] == "--check-arp" {
+			CheckARPTable(0)
+			os.Exit(0)
+		}
+		if ARGS[0] == "--check-host" {
+			CheckHosts(0)
+			os.Exit(0)
+		}
+		if ARGS[0] == "--check-connections" {
+			CheckConnections(0)
+			os.Exit(0)
+		}
+	}
 
 
 	go CheckHosts(CheckARPTableDuration)
@@ -45,7 +59,8 @@ func CheckARPTable(Duration time.Duration) {
   	BoldGreen := Green.Add(color.Bold)
 
   	BoldGreen.Println("[*] ARP cache surveillance started")
-	for ;; {
+  	if Duration == 0 {
+  		Duration = 3
 		exec.Command("sh", "-c", "arp -d -a'").Run()// Clear arp table
 		time.Sleep(Duration*time.Second)
 		ARP_Table,_ := exec.Command("sh", "-c", "arp -a").Output()
@@ -76,7 +91,40 @@ func CheckARPTable(Duration time.Duration) {
 				}
 			}
 		}
-	}
+  	}else {
+		for ;; {
+			exec.Command("sh", "-c", "arp -d -a'").Run()// Clear arp table
+			time.Sleep(Duration*time.Second)
+			ARP_Table,_ := exec.Command("sh", "-c", "arp -a").Output()
+			TableEntries := strings.Split(string(ARP_Table), "\n")
+			ARP.TableSize = (len(TableEntries)-1)
+			for i:=0; i < ARP.TableSize; i++ {
+				Temp := strings.Split(TableEntries[i], "at")
+				ARP.ip[i] = Temp[0]
+				ARP.mac[i] = Temp[1]
+			}
+
+			if Verbose == true {
+				for i:=0; i < ARP.TableSize; i++ {
+					BoldYellow.Println("ARP Cache : "+ARP.ip[i]+" --> "+ARP.mac[i])	
+				}	
+			}
+
+			for j:=0; j < ARP.TableSize; j++ {
+				for k:=(j+1); k < ARP.TableSize; k++ {
+					if ARP.mac[j] == ARP.mac[k] {
+						BoldRed.Println("[!] ARP poisoning detected !")
+						BoldRed.Print("[!] Malicious ip : ")
+						BoldRed.Println(ARP.ip[k])
+						exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'ARP poisoning detected !'").Run()
+						exec.Command("sh", "-c", string("notify-send -u critical 'The Eye' 'Malicious ip "+ARP.ip[k]+"'")).Run()
+						exec.Command("sh", "-c", "espeak 'Warning, arp poisoning detected'").Run()
+
+					}
+				}
+			}
+		}
+  	}
 }
 
 
