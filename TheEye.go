@@ -8,6 +8,9 @@ import "time"
 import "os"
 
 
+var Version string = "1.0.3"
+
+
 type ARPCahce struct {
 	ip [255]string
 	mac [255]string
@@ -26,6 +29,7 @@ var ARP ARPCahce
 func main() {
 
 	ARGS := os.Args[1:]
+	color.Green("Version : "+Version)
 
 	if len(ARGS) != 0 {
 		if ARGS[0] == "--check-arp" {
