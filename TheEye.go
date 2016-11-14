@@ -200,7 +200,9 @@ func CheckConnections(Duration time.Duration) {
 							if len(DotCount) == 4 {
 								BoldRed.Print("[!] Suspicous connection detected ! ----> ")
 								BoldRed.Println(Foreign[1])
-								exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'Suspicous connection detected !'").Run()
+								SuspConn,_ := exec.Command("sh", "-c", string("netstat -p | grep '"+Foreign[1]+"'")).Output()
+								PID := strings.Split(string(SuspConn), "ESTABLISHED")
+								exec.Command("sh", "-c", "notify-send -u critical 'The Eye' 'Suspicous connection detected !	\n"+PID[1]+"'").Run()
 								exec.Command("sh", "-c", "espeak 'Warning, suspicous connection detected'").Run()
 							}
 						}
