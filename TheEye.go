@@ -116,7 +116,7 @@ func CheckARPTable(Duration time.Duration) {
 
 			for j:=0; j < ARP.TableSize; j++ {
 				for k:=(j+1); k < ARP.TableSize; k++ {
-					if ARP.mac[j] == ARP.mac[k] {
+					if ARP.mac[j] == ARP.mac[k] && !strings.Contains(ARP.mac[j], "<incomplete>") && !strings.Contains(ARP.mac[k], "<incomplete>") {
 						BoldRed.Println("[!] ARP poisoning detected !")
 						BoldRed.Print("[!] Malicious ip : ")
 						BoldRed.Println(ARP.ip[k])
