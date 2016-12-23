@@ -10,11 +10,11 @@ The Eye can detect possible ARP poisoning, DNS spoofing and suspicous connection
     </tr>
     <tr>
         <td>Ubuntu</td>
-        <td> 16.04  / 15.10 </td>
+        <td>* </td>
     </tr>
     <tr>
         <td>Kali linux</td>
-        <td> Rolling / Sana</td>
+        <td>* </td>
     </tr>
     <tr>
         <td>Debian</td>
@@ -22,6 +22,14 @@ The Eye can detect possible ARP poisoning, DNS spoofing and suspicous connection
     </tr>
     <tr>
         <td>Mint</td>
+        <td>* </td>
+    </tr>
+     <tr>
+        <td>Arch Linux</td>
+        <td>* </td>
+    </tr>
+    <tr>
+        <td>Black Arch</td>
         <td>* </td>
     </tr>
 </table>
