@@ -1,5 +1,5 @@
 # The-Eye
-Simple security surveillance script for ubuntu.
+Simple security surveillance script for linux distributions.
 The Eye can detect possible ARP poisoning, DNS spoofing and suspicous connections(meterpreter/reverse shell/bind shell) on tcp.
 
 
