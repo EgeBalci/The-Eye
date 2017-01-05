@@ -34,6 +34,9 @@ The Eye can detect possible ARP poisoning, DNS spoofing and suspicous connection
     </tr>
 </table>
 
+# Dependencies
+	sudo apt-get install espeak
+
 # ARP Poisoning detector 
 Checks the arp chache and default gateway continiosly.
 # DNS Spoof Detector
