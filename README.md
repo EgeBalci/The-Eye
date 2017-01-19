@@ -43,3 +43,9 @@ Checks the arp chache and default gateway continiosly.
 Checks the /etc/hosts file for unwanted changes.
 # Suspicous Connection Detector
 Monitors the netstat table for suspicous outgoing tcp connections.
+
+![](http://i.imgur.com/8L1wmjo.png)
+
+   ![](https://blockchain.info/qr?data=14n1bJmCRNpLKAJVJ55jStH5VueFk6G1n4&size=200)
+
+Bitcoin: 14n1bJmCRNpLKAJVJ55jStH5VueFk6G1n4&size
